@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Transactions;
+
 namespace utilities;
 
 public class LinkedList<T> {
@@ -57,5 +60,19 @@ public class LinkedList<T> {
 
     private int LengthRecursive(Node<T> node) {
         return node.Next == null ? 0 : LengthRecursive(node.Next) + 1;
+    }
+
+    public int? Find(T ItemToFind) {
+        return FindRecursive(ItemToFind, head, 0);
+    }
+
+    private int? FindRecursive(T? ItemToFind, Node<T>? node, int index) {
+        if(node == null) { return null; }
+
+        // This is how you can compare 
+        if(EqualityComparer<T>.Default.Equals(ItemToFind, node.Value)) {
+            return index;
+        }
+        return FindRecursive(ItemToFind, node.Next, index + 1);
     }
 }
