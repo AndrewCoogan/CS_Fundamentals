@@ -27,21 +27,35 @@ public class LinkedList<T> {
 
         if(head.Next == null) {
             // One element.
-            T value = head.Value;
+            T? value = head.Value;
             head = null;
             return value;
         }
 
         // Mode than one element.
+        // Know this is not null.
         Node<T> current = head;
 
-        while(current.Next.Next != null) {
-            current = current.Next;
+        // This was initially ?, and has a similar effect as !
+        // ? will only access the following member if it is non-null.
+        // ! is a bit more explicit.
+        while(current!.Next!.Next != null) {
+            current = current.Next;  
         }
 
-        T finalValue = current.Next.Value;
+        // ! means that I am telling the compiler that I, the creator, am confident
+        // that there are no null values being accessed.
+        T? finalValue = current!.Next!.Value;
         current.Next = null;
 
-        return finalValue;
+        return finalValue == null ? default : finalValue;
+    }
+
+    public int Length() {
+        return head == null ? 0 : LengthRecursive(head);
+    }
+
+    private int LengthRecursive(Node<T> node) {
+        return node.Next == null ? 0 : LengthRecursive(node.Next) + 1;
     }
 }
