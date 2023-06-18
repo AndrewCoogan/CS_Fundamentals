@@ -59,7 +59,7 @@ public class LinkedList<T> {
     }
 
     private int LengthRecursive(Node<T> node) {
-        return node.Next == null ? 0 : LengthRecursive(node.Next) + 1;
+        return node.Next == null ? 1 : LengthRecursive(node.Next) + 1;
     }
 
     public int? Find(T ItemToFind) {
@@ -69,7 +69,7 @@ public class LinkedList<T> {
     private int? FindRecursive(T? ItemToFind, Node<T>? node, int index) {
         if(node == null) { return null; }
 
-        // This is how you can compare 
+        // This is how you can compare two variables of generic type T.
         if(EqualityComparer<T>.Default.Equals(ItemToFind, node.Value)) {
             return index;
         }
