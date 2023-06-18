@@ -1,7 +1,6 @@
-using System.Runtime.CompilerServices;
-using System.Transactions;
-
 namespace utilities;
+
+//minimum requirements -- add, remove, find
 
 public class LinkedList<T> {
     // Default value is null, test if null for first value, then set.
@@ -35,8 +34,7 @@ public class LinkedList<T> {
             return value;
         }
 
-        // Mode than one element.
-        // Know this is not null.
+        // More than one element. Know this is not null.
         Node<T> current = head;
 
         // This was initially ?, and has a similar effect as !
@@ -63,6 +61,7 @@ public class LinkedList<T> {
     }
 
     public int? Find(T ItemToFind) {
+        // This will only find the first (lowest index value), if there are multiple.
         return FindRecursive(ItemToFind, head, 0);
     }
 
