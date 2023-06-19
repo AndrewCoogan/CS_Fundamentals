@@ -74,4 +74,38 @@ public class LinkedList<T> {
         }
         return FindRecursive(ItemToFind, node.Next, index + 1);
     }
+
+    private void ValidateIndex(int index) {
+        if(index < 0 || index > Length()) {
+            throw new IndexOutOfRangeException();
+        }
+    }
+
+    // VS Code was getting me to try and use this notation: 
+    // https://www.geeksforgeeks.org/out-parameter-with-examples-in-c-sharp/#
+    // That makes zero sense to me, so not going to implement.
+    private T? GetAt(int index) {
+        ValidateIndex(index);
+        Node<T>? current = head;
+        for(int i = 0; i < index; i++) {
+            current = current!.Next;
+        }
+        return current!.Value;
+    }
+
+    private void SetAt(int index, T? value) {
+        ValidateIndex(index);
+        Node<T>? current = head;
+        for(int i = 0; i < index; i++) {
+            current = current!.Next;
+        }
+        current!.Value = value;
+    }
+
+    public T? this[int index] {
+        // https://www.educative.io/answers/how-to-use-indexers-in-c-sharp
+        // ^^^ following this guide
+        get => this.GetAt(index);
+        set => this.SetAt(index, value);
+    }
 }
