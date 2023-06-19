@@ -55,16 +55,20 @@ public class LinkedList<T>
         T? finalValue = current!.Next!.Value;
         current.Next = null;
 
-        return finalValue ?? default;
+        return finalValue;
     }
 
     public T? PopFront() {
         if(head == null) { return default; }
 
         T? value = head.Value;
+
         // VSCode rec, access head.Next if available, if not returns null?
         // null-coalescing operator
-        head = head.Next ?? null;
+        // I took this bit off actually:  ?? null;
+        // Since the default value of Next is null, we dont need to catch it.
+        head = head.Next;
+
         return value;
     }
 
@@ -76,6 +80,8 @@ public class LinkedList<T>
         return node.Next == null ? 1 : LengthRecursive(node.Next) + 1;
     }
 
+    // This and its recursive function dont have much of a use.
+    // Bue here they are incase I change my mind.
     public int? Find(T ItemToFind) {
         // This will only find the first (lowest index value), if there are multiple.
         return FindRecursive(ItemToFind, head, 0);
@@ -84,10 +90,12 @@ public class LinkedList<T>
     private int? FindRecursive(T? ItemToFind, Node<T>? node, int index) {
         if(node == null) { return null; }
 
-        // This is how you can compare two variables of generic type T.
+        // This is how you can compare two variables of generic types.
         if(EqualityComparer<T>.Default.Equals(ItemToFind, node.Value)) {
             return index;
         }
+
+        // If not found, go to next index.
         return FindRecursive(ItemToFind, node.Next, index + 1);
     }
 
@@ -120,7 +128,7 @@ public class LinkedList<T>
     public T? this[int index] {
         // https://www.educative.io/answers/how-to-use-indexers-in-c-sharp
         // ^^^ following this guide
-        get => this.GetAt(index);
-        set => this.SetAt(index, value);
+        get => GetAt(index);
+        set => SetAt(index, value);
     }
 }

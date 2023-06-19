@@ -56,9 +56,9 @@ public class DrewDictionary<TKey, TValue> {
     }
 
     public void Add(KeyValuePair<TKey, TValue> item) {
-
+        // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(item.Key);
-        // This is where I will need to do resizing.
+        // TODO: This is where I will need to do resizing.
 
         LinkedList<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
         bool newValue = true;
@@ -73,17 +73,27 @@ public class DrewDictionary<TKey, TValue> {
         }
 
         if(newValue) {
-            current.Add(item);
+            current.Add(item); // I am like 99% sure this changes he variable in place.
         }
     }
 
-    public T? Get(TKey key) {
+    public TValue? Get(TKey key) {
+        // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(key);
+
+        // This will return the LinkedList for us to see if the specific key exits.
         LinkedList<KeyValuePair<TKey,TValue>> current = buckets[bucketIndex];
-        foreach(Node<KeyValuePair<TKey, TValue>> keyValuePair in current) {
-            if(EqualityComparer<TKey>.Default.Equals(key, keyValuePair.TKey)) {
-                return current.;
+
+        // Loop through the linked list. If the linked list is empty, the length will be 0.
+        for(int i = 0; i < current.Length(); i++){
+            // This will return the value of the node.
+            KeyValuePair<TKey, TValue>? keyValuePair = current[i];
+
+            if(EqualityComparer<TKey>.Default.Equals(key, keyValuePair!.Key)) {
+                // If the key is present, return the key.
+                return keyValuePair.Value;
             }
         }
+        return default;
     }
 }
