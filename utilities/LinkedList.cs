@@ -2,8 +2,12 @@ namespace utilities;
 
 //minimum requirements -- add, remove, find
 
-public class LinkedList<T> {
+public class LinkedList<T>
+{
     // Default value is null, test if null for first value, then set.
+    
+    // I need to make the head public b/c its needed for the DrewDict
+    // Not sure if this is kosher.
     private Node<T>? head;
 
     public void Add(T item) {
@@ -21,9 +25,11 @@ public class LinkedList<T> {
 
     public T? Pop(){
         if(head == null) {
-            // No elements.
-            Console.WriteLine("List is empty.");
-            // It returns the default value when the object is not initialized.
+            /*
+            Default returns whatever is defined in the class definition (T? in this case)
+            If the object is nullable, then it will return null.
+            Else, depends on the type. Int = 0, Bool = False.
+            */
             return default;
         }
 
@@ -49,7 +55,17 @@ public class LinkedList<T> {
         T? finalValue = current!.Next!.Value;
         current.Next = null;
 
-        return finalValue == null ? default : finalValue;
+        return finalValue ?? default;
+    }
+
+    public T? PopFront() {
+        if(head == null) { return default; }
+
+        T? value = head.Value;
+        // VSCode rec, access head.Next if available, if not returns null?
+        // null-coalescing operator
+        head = head.Next ?? null;
+        return value;
     }
 
     public int Length() {
@@ -75,12 +91,6 @@ public class LinkedList<T> {
         return FindRecursive(ItemToFind, node.Next, index + 1);
     }
 
-    private void ValidateIndex(int index) {
-        if(index < 0 || index > Length()) {
-            throw new IndexOutOfRangeException();
-        }
-    }
-
     // VS Code was getting me to try and use this notation: 
     // https://www.geeksforgeeks.org/out-parameter-with-examples-in-c-sharp/#
     // That makes zero sense to me, so not going to implement.
@@ -100,6 +110,11 @@ public class LinkedList<T> {
             current = current!.Next;
         }
         current!.Value = value;
+    }
+    private void ValidateIndex(int index) {
+        if(index < 0 || index > Length()) {
+            throw new IndexOutOfRangeException();
+        }
     }
 
     public T? this[int index] {
