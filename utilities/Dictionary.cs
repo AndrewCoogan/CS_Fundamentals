@@ -15,7 +15,7 @@ hash collide, making the target system use a lot more of computing power to reso
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TValue"></typeparam>
-public class DrewDictionary<TKey, TValue> {
+public class Dictionary<TKey, TValue> {
     // VSCode was telling me to make this readonly, going with it for now.
 
     /*
@@ -44,7 +44,7 @@ public class DrewDictionary<TKey, TValue> {
     private LinkedList<KeyValuePair<TKey, TValue>>[] buckets;
     private const int DefaultCapacity = 16;
 
-    public DrewDictionary() {
+    public Dictionary() {
         buckets = new LinkedList<KeyValuePair<TKey, TValue>>[DefaultCapacity];
     }
 
@@ -76,13 +76,16 @@ public class DrewDictionary<TKey, TValue> {
             current.Add(item); // I am like 99% sure this changes he variable in place.
         }
     }
-
+    
+    // This is modeling after python's Dict.Get function.
+    // It is forgiving and will return a null if key is not present.
     public TValue? Get(TKey key) {
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(key);
 
         // This will return the LinkedList for us to see if the specific key exits.
-        LinkedList<KeyValuePair<TKey,TValue>> current = buckets[bucketIndex];
+        // This might be null?
+        LinkedList<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
 
         // Loop through the linked list. If the linked list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
@@ -95,5 +98,22 @@ public class DrewDictionary<TKey, TValue> {
             }
         }
         return default;
+    }
+
+    // Took the lead from my LinkedList code on this one.
+    // Will allow for DrewDict[obj] = obj2
+    // or xxx = DrewDict[obj]
+    private TValue? GetAt(TKey key) {
+        return Get(key) ?? default;
+    }
+
+    private void SetAt(TKey key, TValue? value) {
+        KeyValuePair<TKey, TValue> kvp = new(key, value);
+        Add(kvp);
+    }
+
+    public TValue? this[TKey index] {
+        get => GetAt(index);
+        set => SetAt(index, value);
     }
 }
