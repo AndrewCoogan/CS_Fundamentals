@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\stack.csproj" />
+    <InternalsVisibleTo Include="utilities" />
   </ItemGroup>
 
 </Project>

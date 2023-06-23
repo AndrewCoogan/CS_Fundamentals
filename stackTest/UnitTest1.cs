@@ -1,5 +1,6 @@
 namespace stackTest;
 
+using utilities;
 public class Tests
 {
     [SetUp]
@@ -8,8 +9,12 @@ public class Tests
     }
 
     [Test]
-    public void Test1()
+    public void LinkedListTest()
     {
-        Assert.Pass();
+        var linkedList = new utilities.LinkedList<int>();
+        linkedList.Add(1);
+        linkedList.Add(2);
+        linkedList.Add(3);
+        Assert.That(linkedList.Length(), Is.EqualTo(2));
     }
 }
