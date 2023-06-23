@@ -131,4 +131,14 @@ public class LinkedList<T>
         get => GetAt(index);
         set => SetAt(index, value);
     }
+
+    public void Print() {
+        Node<T>? current = head;
+        while (current != null)
+        {
+            Console.Write($"{current.Value} ");
+            current = current.Next;
+        }
+        Console.WriteLine();
+    }
 }

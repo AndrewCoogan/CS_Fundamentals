@@ -76,11 +76,14 @@ public class List<T>
         (index < 0 || index >= _list.Length) ? 
         throw new ArgumentOutOfRangeException(nameof(index)) : _list[index];
 
-    private void SetAt(int index, T? value) {
-        if(index < 0) {
+    private void SetAt(int index, T value) {
+        if(value == null) {
+            throw new ArgumentNullException(nameof(index));
+        } else if(index < 0) {
             throw new ArgumentOutOfRangeException(nameof(index));
         } else if(index < _list.Length) {
-            _list[index] = value; // I dont see why we cant add a possible null value.
+            // I dont see why we cant add a possible null value.
+            _list[index] = value;
         } else {
             T[] newList = new T[index + 1];
             Array.Copy(_list, newList, newList.Length);
@@ -92,6 +95,6 @@ public class List<T>
     // I can add the NotNull attribute to throw a null exception error if a null is passes.
     public T? this[[NotNull]int index] {
         get => GetAt(index);
-        set => SetAt(index, value);
+        set => SetAt(index, value!);
     }
 }

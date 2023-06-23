@@ -7,14 +7,15 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Console.WriteLine("Hello.");
+        // I am going to use this to test stuff, Ill make legit testing later.
+        Console.WriteLine("Linked List Test.");
 
-        var tt = new utilities.LinkedList<int>();
+        var linkedList = new utilities.LinkedList<int>();
 
-        tt.Add(3);
-        tt.Add(4);
-        tt.Add(5);
-
-        Console.WriteLine(tt.Length());
+        linkedList.Add(3);
+        linkedList.Add(4);
+        linkedList.Add(5);
+        linkedList.Print();
+        Console.WriteLine(linkedList.Length());
     }
 }
