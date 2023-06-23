@@ -99,6 +99,10 @@ public class LinkedList<T>
         return FindRecursive(ItemToFind, node.Next, index + 1);
     }
 
+    public void Clear() {
+        head = null;
+    }
+
     // VS Code was getting me to try and use this notation: 
     // https://www.geeksforgeeks.org/out-parameter-with-examples-in-c-sharp/#
     // That makes zero sense to me, so not going to implement.
