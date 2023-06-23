@@ -15,6 +15,7 @@ internal class Program
         linkedList.Add(3);
         linkedList.Add(4);
         linkedList.Add(5);
+        linkedList.Add(6);
         linkedList.Print();
         Console.WriteLine(linkedList.Length());
     }
