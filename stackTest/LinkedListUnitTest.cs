@@ -1,6 +1,6 @@
 namespace utilities
 {
-    public class Tests
+    public class LinkedListUnitTest
     {
         private readonly LinkedList<int> LinkedListInt = new();
         private readonly LinkedList<string> LinkedListString = new();

@@ -47,7 +47,7 @@ public class List<T>
         T[] newList = new T[_list.Length + 1];
         
         // We can use Array.Copy to, well, copy the list, just make it one longer.
-        Array.Copy(_list, newList, newList.Length);
+        Array.Copy(_list, newList, _list.Length);
 
         // Add the item.
         newList[_list.Length] = item;
@@ -61,7 +61,7 @@ public class List<T>
     // really doing is func(value) => value % 2 == 0 => true/false
     // If its true, we want it in the result, if not, we dont.
     // This is not an inplace operation and returns a new instance of a list.
-     public List<T> Filter([NotNull]Predicate<T> match) {
+     public List<T> Filter([NotNull] Predicate<T> match) {
         List<T> outputList = new(); 
         for(int i = 0 ; _list != null && i < _list.Length; i++) {
             // && ensures the LHS is true before doing the RHS
@@ -71,6 +71,12 @@ public class List<T>
         }
         return outputList;
     }
+
+    public bool Contains([NotNull] T item) {
+        return Filter(x => EqualityComparer<T>.Default.Equals(item, x)).Length() > 0;
+    }
+
+    public int Length() => _list.Length;
 
     private T? GetAt(int index) => 
         (index < 0 || index >= _list.Length) ? 
@@ -93,7 +99,7 @@ public class List<T>
     }
 
     // I can add the NotNull attribute to throw a null exception error if a null is passes.
-    public T? this[[NotNull]int index] {
+    public T? this[[NotNull] int index] {
         get => GetAt(index);
         set => SetAt(index, value!);
     }
