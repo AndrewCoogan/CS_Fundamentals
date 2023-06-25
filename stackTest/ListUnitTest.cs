@@ -38,6 +38,8 @@ namespace utilities
                 Assert.That(ListInt.Filter(x => x % 1 == 0).Length(), Is.EqualTo(3));
                 Assert.That(ListInt.Filter(x => x % 10 == 0).Length(), Is.EqualTo(0));
 
+                // to do something
+
                 // Remove
                 //var newListInt = ListInt.Remove(1);
                 //Assert.That(newListInt.Length(), Is.EqualTo(2));
