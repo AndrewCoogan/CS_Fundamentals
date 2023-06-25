@@ -25,10 +25,23 @@ namespace utilities
                 ListString.Add("Fox");
 
                 // Length
-                //Assert.That(ListInt.Length, Is.EqualTo(3));
+                Assert.That(ListInt.Length, Is.EqualTo(3));
 
                 // Contains
-                //Assert.That(ListInt.Contains(1), Is.True);
+                Assert.That(ListInt.Contains(1), Is.True);
+                Assert.That(ListInt.Contains(-1), Is.False);
+                Assert.That(ListString.Contains("Quick"), Is.True);
+                Assert.That(ListString.Contains("quick"), Is.False);
+
+                // Filter
+                Assert.That(ListInt.Filter(x => x % 2 == 0).Length(), Is.EqualTo(1));
+                Assert.That(ListInt.Filter(x => x % 1 == 0).Length(), Is.EqualTo(3));
+                Assert.That(ListInt.Filter(x => x % 10 == 0).Length(), Is.EqualTo(0));
+
+                // Remove
+                //var newListInt = ListInt.Remove(1);
+                //Assert.That(newListInt.Length(), Is.EqualTo(2));
+                //Assert.That(ListString.Remove("Fox").Length(), Is.EqualTo(2));
             });
         }
     }

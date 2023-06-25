@@ -61,22 +61,27 @@ public class List<T>
     // really doing is func(value) => value % 2 == 0 => true/false
     // If its true, we want it in the result, if not, we dont.
     // This is not an inplace operation and returns a new instance of a list.
-     public List<T> Filter([NotNull] Predicate<T> match) {
+     public List<T> Filter([NotNull] Predicate<T> match, bool just_first = false) {
         List<T> outputList = new(); 
         for(int i = 0 ; _list != null && i < _list.Length; i++) {
             // && ensures the LHS is true before doing the RHS
             if(_list[i] != null && match(_list[i])) {
                 outputList.Add(_list[i]);
+                if(just_first) { return outputList; }
             }
         }
         return outputList;
     }
 
     public bool Contains([NotNull] T item) {
-        return Filter(x => EqualityComparer<T>.Default.Equals(item, x)).Length() > 0;
+        return Filter(x => EqualityComparer<T>.Default.Equals(item, x), true).Length() > 0;
     }
 
     public int Length() => _list.Length;
+
+    //public void Remove([NotNull] T item, bool inplace = false)  _list = Filter(X => !EqualityComparer<T>.Default.Equals(item, X));
+    
+    //public List<T> Remove([NotNull] T item) => Filter(X => !EqualityComparer<T>.Default.Equals(item, X));
 
     private T? GetAt(int index) => 
         (index < 0 || index >= _list.Length) ? 

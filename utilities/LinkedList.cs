@@ -125,7 +125,7 @@ public class LinkedList<T>
     }
     private void ValidateIndex(int index) {
         if(index < 0 || index > Length()) {
-            throw new IndexOutOfRangeException();
+            throw new IndexOutOfRangeException(nameof(index));
         }
     }
 
