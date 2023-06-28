@@ -37,13 +37,14 @@ namespace utilities
                 Assert.That(ListInt.Filter(x => x % 2 == 0).Length(), Is.EqualTo(1));
                 Assert.That(ListInt.Filter(x => x % 1 == 0).Length(), Is.EqualTo(3));
                 Assert.That(ListInt.Filter(x => x % 10 == 0).Length(), Is.EqualTo(0));
-
-                // to do something
+                Assert.That(ListString.Filter(x => x == "Quick").Length(), Is.EqualTo(1));
 
                 // Remove
-                //var newListInt = ListInt.Remove(1);
-                //Assert.That(newListInt.Length(), Is.EqualTo(2));
-                //Assert.That(ListString.Remove("Fox").Length(), Is.EqualTo(2));
+                var newListInt = ListInt.Remove(1);
+                Assert.That(newListInt.Length(), Is.EqualTo(2));
+                Assert.That(ListString.Remove("Fox").Length(), Is.EqualTo(2));
+                newListInt.Remove(3, true);
+                Assert.That(newListInt.Length(), Is.EqualTo(1));
             });
         }
     }

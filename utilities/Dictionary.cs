@@ -41,11 +41,11 @@ public class Dictionary<TKey, TValue> {
     A : That is correct, the index of the array is the hash of the key. The value in the node is the key value pair,
     so once you get the index of the array you run through the linked list to find the unhashed key.
     */
-    private LinkedList<KeyValuePair<TKey, TValue>>[] buckets;
+    private List<KeyValuePair<TKey, TValue>>[] buckets;
     private const int DefaultCapacity = 16;
 
     public Dictionary() {
-        buckets = new LinkedList<KeyValuePair<TKey, TValue>>[DefaultCapacity];
+        buckets = new List<KeyValuePair<TKey, TValue>>[DefaultCapacity];
     }
 
     private int GetBucketIndex(TKey key) {
