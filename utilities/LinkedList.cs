@@ -121,7 +121,7 @@ public class LinkedList<T>
         for(int i = 0; i < index; i++) {
             current = current?.Next;
         }
-        current.Value = value;
+        current!.Value = value;
     }
     private void ValidateIndex(int index) {
         if(index < 0 || index > Length()) {

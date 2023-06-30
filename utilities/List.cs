@@ -76,7 +76,7 @@ public class List<T>
     public List<T> Filter(Predicate<T> match) => Filter(match, false);
 
     public bool Contains([NotNull] T item) {
-        Predicate<T> match = X => EqualityComparer<T>.Default.Equals(item, X);
+        bool match(T X) => EqualityComparer<T>.Default.Equals(item, X);
         return Filter(match, true).Length() > 0;
     }
 

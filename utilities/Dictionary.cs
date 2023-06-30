@@ -11,7 +11,7 @@ hash collide, making the target system use a lot more of computing power to reso
 */
 
 /// <summary>
-/// Creating my own dictionay class, using my linked list class.
+/// Creating my own dictionay class, using my list class.
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TValue"></typeparam>
@@ -19,7 +19,7 @@ public class Dictionary<TKey, TValue> {
     // VSCode was telling me to make this readonly, going with it for now.
 
     /*
-    This is going to be an array of linked lists. The linked lists are going to be used to avoid
+    This is going to be list of lists. The lists are going to be used to avoid
     and collisions that come up. The index of the array is going to be function on the hash of the key.
 
     To calculate the index within the buckets var I do the following: hash(key) % len(buckets)
@@ -39,19 +39,17 @@ public class Dictionary<TKey, TValue> {
 
     Q : Say you get a collision and you append, how do you tell the difference? Do you store the unhashed key too?
     A : That is correct, the index of the array is the hash of the key. The value in the node is the key value pair,
-    so once you get the index of the array you run through the linked list to find the unhashed key.
+    so once you get the index of the array you run through the list to find the unhashed key.
     */
-    private List<KeyValuePair<TKey, TValue>>[] buckets;
     private const int DefaultCapacity = 16;
+    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
 
-    public Dictionary() {
-        buckets = new List<KeyValuePair<TKey, TValue>>[DefaultCapacity];
-    }
+    public Dictionary() {  }
 
     private int GetBucketIndex(TKey key) {
         // Its asking me to establish key as non null, ill do that for now, but see post restart
         int hashCode = key!.GetHashCode();
-        int bucketIndex = hashCode % buckets.Length;
+        int bucketIndex = hashCode % buckets.Length();
         return bucketIndex;
     }
 
@@ -60,7 +58,7 @@ public class Dictionary<TKey, TValue> {
         int bucketIndex = GetBucketIndex(item.Key);
         // TODO: This is where I will need to do resizing.
 
-        LinkedList<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
+        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
         bool newValue = true;
         int position = 0;
 
@@ -83,11 +81,11 @@ public class Dictionary<TKey, TValue> {
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(key);
 
-        // This will return the LinkedList for us to see if the specific key exits.
+        // This will return the List for us to see if the specific key exits.
         // This might be null?
-        LinkedList<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
+        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
 
-        // Loop through the linked list. If the linked list is empty, the length will be 0.
+        // Loop through the list. If the list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
             // This will return the value of the node.
             KeyValuePair<TKey, TValue>? keyValuePair = current[i];
@@ -100,7 +98,7 @@ public class Dictionary<TKey, TValue> {
         return default;
     }
 
-    // Took the lead from my LinkedList code on this one.
+    // Took the lead from my List code on this one.
     // Will allow for DrewDict[obj] = obj2
     // or xxx = DrewDict[obj]
     private TValue? GetAt(TKey key) {

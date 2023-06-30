@@ -4,6 +4,8 @@ namespace utilities
     {
         private readonly List<int> ListInt = new();
         private readonly List<string> ListString = new();
+        private readonly List<int> ListIntLengthFive = new(5);
+
 
         [SetUp]
         public void Setup()
@@ -41,10 +43,13 @@ namespace utilities
 
                 // Remove
                 var newListInt = ListInt.Remove(1);
-                Assert.That(newListInt.Length(), Is.EqualTo(2));
+                Assert.That(newListInt!.Length(), Is.EqualTo(2));
                 Assert.That(ListString.Remove("Fox").Length(), Is.EqualTo(2));
                 newListInt.Remove(3, true);
                 Assert.That(newListInt.Length(), Is.EqualTo(1));
+
+                // Initalization
+                Assert.That(ListIntLengthFive.Length(), Is.EqualTo(5));
             });
         }
     }
