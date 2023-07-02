@@ -43,6 +43,7 @@ public class Dictionary<TKey, TValue> {
     */
     private const int DefaultCapacity = 16;
     private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    // Buckets is a list of lists.
 
     public Dictionary() {  }
 
@@ -53,28 +54,33 @@ public class Dictionary<TKey, TValue> {
         return bucketIndex;
     }
 
-    public void Add(KeyValuePair<TKey, TValue> item) {
+    private void AddToDict(KeyValuePair<TKey, TValue> item) {
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(item.Key);
         // TODO: This is where I will need to do resizing.
 
-        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
+        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
         bool newValue = true;
         int position = 0;
 
-        while(position < current.Length() & newValue) {
+        // Here we are in the sub list, ideally of length 1.
+        while (position < current.Length() & newValue)
+        {
             // The key already exists. Set it to the new value.
             if(EqualityComparer<TKey>.Default.Equals(current[position]!.Key, item.Key)) {
                 current[position]!.Value = item.Value;
                 newValue = false;
             }
+            position++;
         }
 
         if(newValue) {
             current.Add(item); // I am like 99% sure this changes he variable in place.
         }
     }
-    
+
+    public void Add(TKey key, TValue value) => SetAt(key, value);
+
     // This is modeling after python's Dict.Get function.
     // It is forgiving and will return a null if key is not present.
     public TValue? Get(TKey key) {
@@ -83,7 +89,7 @@ public class Dictionary<TKey, TValue> {
 
         // This will return the List for us to see if the specific key exits.
         // This might be null?
-        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex];
+        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
 
         // Loop through the list. If the list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
@@ -107,11 +113,15 @@ public class Dictionary<TKey, TValue> {
 
     private void SetAt(TKey key, TValue? value) {
         KeyValuePair<TKey, TValue> kvp = new(key, value);
-        Add(kvp);
+        AddToDict(kvp);
     }
 
     public TValue? this[TKey index] {
         get => GetAt(index);
         set => SetAt(index, value);
+    }
+
+    public int Count() {
+        return (int)buckets.Length();
     }
 }
