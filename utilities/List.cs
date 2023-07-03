@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualBasic;
 
 namespace utilities;
 
@@ -40,6 +41,14 @@ public class List<T>
         }
     }
 
+    public List(int length, T defaultValue) {
+        List<T> newList = new(length);
+        for(int i = 0; i < length; i++) {
+            newList[i] = defaultValue; 
+        }
+        _list = newList; // need to fix this.
+    }
+
     // This is going to add a singular item to the list.
     public void Add(T item) {
         // Arrays are fixed length, so need to add to the size
@@ -61,7 +70,7 @@ public class List<T>
     // really doing is func(value) => value % 2 == 0 => true/false
     // If its true, we want it in the result, if not, we dont.
     // This is not an inplace operation and returns a new instance of a list.
-    private List<T> Filter([NotNull] Predicate<T> match, bool just_first) {
+    private List<T> Filter(Predicate<T> match, bool just_first) {
         List<T> outputList = new(); 
         for(int i = 0 ; _list != null && i < _list.Length; i++) {
             // && ensures the LHS is true before doing the RHS
@@ -95,12 +104,15 @@ public class List<T>
         return array;
     }
 
-    private T? GetAt(int index) => 
-        (index < 0 || index >= _list.Length) ? 
-        throw new ArgumentOutOfRangeException(nameof(index)) : _list[index];
+    private T? GetAt(int index) {
+        if(index < 0 || index >= _list.Length) {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        } 
+        return _list[index];
+    }
 
     private void SetAt(int index, T value) {
-        if(value == null) {
+        if(value is null) {
             throw new ArgumentNullException(nameof(index));
         } else if(index < 0) {
             throw new ArgumentOutOfRangeException(nameof(index));
@@ -109,7 +121,7 @@ public class List<T>
             _list[index] = value;
         } else {
             T[] newList = new T[index + 1];
-            Array.Copy(_list, newList, newList.Length);
+            Array.Copy(_list, newList, _list.Length);
             if(value != null) { newList[index] = value; }
             _list = newList;
         }

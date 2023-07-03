@@ -47,25 +47,28 @@ public class Dictionary<TKey, TValue> {
 
     public Dictionary() {  }
 
-    private int GetBucketIndex(TKey key) {
-        // Its asking me to establish key as non null, ill do that for now, but see post restart
-        int hashCode = key!.GetHashCode();
-        int bucketIndex = hashCode % buckets.Length();
-        return bucketIndex;
-    }
+    private int GetBucketIndex(TKey key) => Math.Abs(key!.GetHashCode() % buckets.Length());
 
     private void AddToDict(KeyValuePair<TKey, TValue> item) {
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(item.Key);
         // TODO: This is where I will need to do resizing.
 
-        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
+        // This can be null, if we have not accessed it yet.
+        List<KeyValuePair<TKey, TValue>>? current = buckets[bucketIndex];
+
+        // If it is null then we initialize it.
+        if (current is null) {
+            current = new List<KeyValuePair<TKey, TValue>>();
+            buckets[bucketIndex] = current;
+        }
+
         bool newValue = true;
         int position = 0;
 
         // Here we are in the sub list, ideally of length 1.
-        while (position < current.Length() & newValue)
-        {
+        while (position < current.Length() & newValue) {
+            Console.WriteLine(position.ToString() + " " + current.Length().ToString());
             // The key already exists. Set it to the new value.
             if(EqualityComparer<TKey>.Default.Equals(current[position]!.Key, item.Key)) {
                 current[position]!.Value = item.Value;
@@ -89,7 +92,12 @@ public class Dictionary<TKey, TValue> {
 
         // This will return the List for us to see if the specific key exits.
         // This might be null?
-        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
+        List<KeyValuePair<TKey, TValue>>? current = buckets[bucketIndex];
+
+        if (current is null) {
+            current = new List<KeyValuePair<TKey, TValue>>();
+            buckets[bucketIndex] = current;
+        }
 
         // Loop through the list. If the list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
@@ -122,6 +130,18 @@ public class Dictionary<TKey, TValue> {
     }
 
     public int Count() {
-        return (int)buckets.Length();
+        int count = 0;
+        for(int i = 0; i < buckets.Length(); i++) {
+            if(buckets[i] is not null && buckets[i]!.Length() > 0) {
+                count++;
+            }
+        }
+        return count;
     }
+
+    public int CountBuckets() {
+        return buckets.Length();
+    }
+
+    public int GetRawBucket(TKey key) => GetBucketIndex(key);
 }

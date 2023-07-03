@@ -12,7 +12,7 @@ public class LinkedList<T>
 
     public void Add(T item) {
         Node<T> newNode = new(item);
-        if (head == null) {
+        if (head is null) {
             head = newNode;
         } else {
             Node<T> current = head;
@@ -24,7 +24,7 @@ public class LinkedList<T>
     }
 
     public T? Pop(){
-        if(head == null) {
+        if(head is null) {
             /*
             Default returns whatever is defined in the class definition (T? in this case)
             If the object is nullable, then it will return null.
@@ -33,7 +33,7 @@ public class LinkedList<T>
             return default;
         }
 
-        if(head.Next == null) {
+        if(head.Next is null) {
             // One element.
             T? value = head.Value;
             head = null;
@@ -59,7 +59,7 @@ public class LinkedList<T>
     }
 
     public T? PopFront() {
-        if(head == null) { return default; }
+        if(head is null) { return default; }
 
         T? value = head.Value;
 
@@ -73,11 +73,11 @@ public class LinkedList<T>
     }
 
     public int Length() {
-        return head == null ? 0 : LengthRecursive(head);
+        return head is null ? 0 : LengthRecursive(head);
     }
 
     private int LengthRecursive(Node<T> node) {
-        return node.Next == null ? 1 : LengthRecursive(node.Next) + 1;
+        return node.Next is null ? 1 : LengthRecursive(node.Next) + 1;
     }
 
     // This and its recursive function dont have much of a use.
@@ -88,7 +88,7 @@ public class LinkedList<T>
     }
 
     private int? FindRecursive(T? ItemToFind, Node<T>? node, int index) {
-        if(node == null) { return null; }
+        if(node is null) { return null; }
 
         // This is how you can compare two variables of generic types.
         if(EqualityComparer<T>.Default.Equals(ItemToFind, node.Value)) {
