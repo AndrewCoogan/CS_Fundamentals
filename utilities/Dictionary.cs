@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics.Arm;
+
 namespace utilities;
 
 /*
@@ -41,11 +43,16 @@ public class Dictionary<TKey, TValue> {
     A : That is correct, the index of the array is the hash of the key. The value in the node is the key value pair,
     so once you get the index of the array you run through the list to find the unhashed key.
     */
-    private const int DefaultCapacity = 16;
+    private const int DefaultCapacity = 32;
     private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
     // Buckets is a list of lists.
 
-    public Dictionary() {  }
+    public Dictionary() {
+
+        for(int i = 0; i < DefaultCapacity; i++){
+            buckets[i] = new List<KeyValuePair<TKey, TValue>>();
+        }
+    }
 
     private int GetBucketIndex(TKey key) => Math.Abs(key!.GetHashCode() % buckets.Length());
 
@@ -77,9 +84,7 @@ public class Dictionary<TKey, TValue> {
             position++;
         }
 
-        if(newValue) {
-            current.Add(item); // I am like 99% sure this changes he variable in place.
-        }
+        if(newValue) current.Add(item);
     }
 
     public void Add(TKey key, TValue value) => SetAt(key, value);
@@ -94,6 +99,7 @@ public class Dictionary<TKey, TValue> {
         // This might be null?
         List<KeyValuePair<TKey, TValue>>? current = buckets[bucketIndex];
 
+        // Due to how we are initializing this, this should not trip at all.
         if (current is null) {
             current = new List<KeyValuePair<TKey, TValue>>();
             buckets[bucketIndex] = current;
@@ -116,7 +122,7 @@ public class Dictionary<TKey, TValue> {
     // Will allow for DrewDict[obj] = obj2
     // or xxx = DrewDict[obj]
     private TValue? GetAt(TKey key) {
-        return Get(key) ?? default;
+        return Get(key);
     }
 
     private void SetAt(TKey key, TValue? value) {
@@ -132,16 +138,13 @@ public class Dictionary<TKey, TValue> {
     public int Count() {
         int count = 0;
         for(int i = 0; i < buckets.Length(); i++) {
-            if(buckets[i] is not null && buckets[i]!.Length() > 0) {
-                count++;
-            }
+            if(buckets[i] is not null && buckets[i]!.Length() > 0) count++;
+            //Console.WriteLine("Length of bucket " + i.ToString() + " with length " + buckets[i]!.Length().ToString());
         }
         return count;
     }
 
-    public int CountBuckets() {
-        return buckets.Length();
-    }
+    public int CountBuckets() => buckets.Length();
 
     public int GetRawBucket(TKey key) => GetBucketIndex(key);
 }

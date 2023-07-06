@@ -41,12 +41,12 @@ public class List<T>
         }
     }
 
-    public List(int length, T defaultValue) {
+    public List(int length, T? defaultValue) {
         List<T> newList = new(length);
         for(int i = 0; i < length; i++) {
             newList[i] = defaultValue; 
         }
-        _list = newList; // need to fix this.
+        _list = newList.ToArray();
     }
 
     // This is going to add a singular item to the list.
