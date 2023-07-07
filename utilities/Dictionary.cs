@@ -42,9 +42,12 @@ public class Dictionary<TKey, TValue> {
     Q : Say you get a collision and you append, how do you tell the difference? Do you store the unhashed key too?
     A : That is correct, the index of the array is the hash of the key. The value in the node is the key value pair,
     so once you get the index of the array you run through the list to find the unhashed key.
+
+    This is a really infomative link:
+    https://dotnetos.org/blog/2022-03-28-dictionary-implementation/
     */
     private const int DefaultCapacity = 32;
-    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    private readonly List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
     // Buckets is a list of lists.
 
     public Dictionary() {

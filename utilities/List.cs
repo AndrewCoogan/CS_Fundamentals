@@ -50,19 +50,20 @@ public class List<T>
     }
 
     // This is going to add a singular item to the list.
-    public void Add(T item) {
-        // Arrays are fixed length, so need to add to the size
-        // I need this to be a new array for the array copy to work.
-        T[] newList = new T[_list.Length + 1];
-        
-        // We can use Array.Copy to, well, copy the list, just make it one longer.
-        Array.Copy(_list, newList, _list.Length);
+    public void Add(T item) {        
+        // Using resize as Copy creates a new list and copies it element by element. O(n)
+        // Resize is going to make the list longer.
+        Array.Resize(ref _list, _list.Length + 1);
 
-        // Add the item.
-        newList[_list.Length] = item;
+        /*
+        Here's a breakdown of the syntax:
+            ^ indicates the start of the index from the end syntax.
+            1 represents the offset from the end of the collection. 
+                
+            So ^1 returns the last element.
+        */
 
-        // Set the internal list as the new, one longer, list.
-        _list = newList;
+        _list[^1] = item;
     }
 
     // This is a filter method that takes in a predicate (x => x % 2 == 0), and returns a list.
