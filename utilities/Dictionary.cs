@@ -46,15 +46,32 @@ public class Dictionary<TKey, TValue> {
     This is a really infomative link:
     https://dotnetos.org/blog/2022-03-28-dictionary-implementation/
     */
-    private const int DefaultCapacity = 32;
-    private readonly List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    private const int DefaultCapacity = 16;
+    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    // I dont want buckets to be read only because I will need to resize it.
     // Buckets is a list of lists.
 
     public Dictionary() {
 
-        for(int i = 0; i < DefaultCapacity; i++){
-            buckets[i] = new List<KeyValuePair<TKey, TValue>>();
+    }
+
+    private void Resize() {
+        List<List<KeyValuePair<TKey, TValue>>> newBuckets = new(buckets.Length() * 2);
+
+        for(int bucket = 0; bucket < buckets.Length(); bucket++) {
+            if(buckets[bucket] is not null) {
+                /*
+                I need to find a way here to make a new dictionary and just add to it.
+                Can I make a new instance of Dictionary and pass it back to this instance? Is that appropriate?
+                I am a bit stuck here.
+                */
+                
+            }
         }
+
+        // At some point I need to do this.
+        buckets = newBuckets;
+
     }
 
     private int GetBucketIndex(TKey key) => Math.Abs(key!.GetHashCode() % buckets.Length());
@@ -65,25 +82,18 @@ public class Dictionary<TKey, TValue> {
         // TODO: This is where I will need to do resizing.
 
         // This can be null, if we have not accessed it yet.
-        List<KeyValuePair<TKey, TValue>>? current = buckets[bucketIndex];
-
-        // If it is null then we initialize it.
-        if (current is null) {
-            current = new List<KeyValuePair<TKey, TValue>>();
-            buckets[bucketIndex] = current;
-        }
-
+        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex] ?? new List<KeyValuePair<TKey, TValue>>();
         bool newValue = true;
         int position = 0;
 
         // Here we are in the sub list, ideally of length 1.
         while (position < current.Length() & newValue) {
-            Console.WriteLine(position.ToString() + " " + current.Length().ToString());
+            //Console.WriteLine(position.ToString() + " " + current.Length().ToString());
             // The key already exists. Set it to the new value.
             if(EqualityComparer<TKey>.Default.Equals(current[position]!.Key, item.Key)) {
                 current[position]!.Value = item.Value;
                 newValue = false;
-            }
+                }
             position++;
         }
 
@@ -100,13 +110,7 @@ public class Dictionary<TKey, TValue> {
 
         // This will return the List for us to see if the specific key exits.
         // This might be null?
-        List<KeyValuePair<TKey, TValue>>? current = buckets[bucketIndex];
-
-        // Due to how we are initializing this, this should not trip at all.
-        if (current is null) {
-            current = new List<KeyValuePair<TKey, TValue>>();
-            buckets[bucketIndex] = current;
-        }
+        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
 
         // Loop through the list. If the list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
@@ -141,7 +145,7 @@ public class Dictionary<TKey, TValue> {
     public int Count() {
         int count = 0;
         for(int i = 0; i < buckets.Length(); i++) {
-            if(buckets[i] is not null && buckets[i]!.Length() > 0) count++;
+            count+= buckets[i]!.Length();
             //Console.WriteLine("Length of bucket " + i.ToString() + " with length " + buckets[i]!.Length().ToString());
         }
         return count;

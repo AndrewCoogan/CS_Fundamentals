@@ -51,8 +51,12 @@ public class List<T>
 
     // This is going to add a singular item to the list.
     public void Add(T item) {        
-        // Using resize as Copy creates a new list and copies it element by element. O(n)
-        // Resize is going to make the list longer.
+        /*
+        Using resize as Copy creates a new list and copies it element by element. O(n)
+        Resize is going to make the list longer.
+        "REF" is passing in _list by referene, meaning its changing the array in place.
+        */
+        
         Array.Resize(ref _list, _list.Length + 1);
 
         /*
