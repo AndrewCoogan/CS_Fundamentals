@@ -70,6 +70,15 @@ public class List<T>
         _list[^1] = item;
     }
 
+    public void Resize(int length) {
+        try {
+            Array.Resize(ref _list, length);
+        }
+        catch (Exception e) {
+            throw new ArgumentOutOfRangeException(e.ToString());
+        }
+    }
+
     // This is a filter method that takes in a predicate (x => x % 2 == 0), and returns a list.
     // Predicates use lambda functions or ananomous functions, so by doing match(value), what were
     // really doing is func(value) => value % 2 == 0 => true/false
@@ -101,6 +110,10 @@ public class List<T>
         List<T> filteredData = Filter(X => !EqualityComparer<T>.Default.Equals(item, X), false);
         if(inplace) _list = filteredData.ToArray();
         return retrurnNull ? null : filteredData;
+    }
+
+    public T Pop() {
+        
     }
 
     public T[] ToArray() {

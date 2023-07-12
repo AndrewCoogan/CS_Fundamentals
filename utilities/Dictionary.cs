@@ -45,27 +45,30 @@ public class Dictionary<TKey, TValue> {
 
     This is a really infomative link:
     https://dotnetos.org/blog/2022-03-28-dictionary-implementation/
+
+    Readonly means you can change it you cant make a new thing in its place.
     */
     private const int DefaultCapacity = 16;
-    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
-    // I dont want buckets to be read only because I will need to resize it.
-    // Buckets is a list of lists.
+    private int Iteration = 1;
+    private readonly List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
 
     public Dictionary() {
 
     }
 
     private void Resize() {
-        List<List<KeyValuePair<TKey, TValue>>> newBuckets = new(buckets.Length() * 2);
+        int currentLength = buckets.Length();
+        buckets.Resize(buckets.Length() + DefaultCapacity);
+        Iteration++;
 
-        for(int bucket = 0; bucket < buckets.Length(); bucket++) {
+        for(int bucket = 0; bucket < currentLength; bucket++) {
             if(buckets[bucket] is not null) {
                 /*
-                I need to find a way here to make a new dictionary and just add to it.
-                Can I make a new instance of Dictionary and pass it back to this instance? Is that appropriate?
-                I am a bit stuck here.
+                If we get here, we need to rehash an entry. How do we not duplicate rehashes? A version in the KVP?
                 */
-                
+                for(int entry = 0; entry < buckets[bucket].Length(); entry++) {
+                    
+                }
             }
         }
 
