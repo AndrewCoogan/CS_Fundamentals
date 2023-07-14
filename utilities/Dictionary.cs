@@ -57,23 +57,7 @@ public class Dictionary<TKey, TValue> {
     }
 
     private void Resize() {
-        int currentLength = buckets.Length();
-        buckets.Resize(buckets.Length() + DefaultCapacity);
-        Iteration++;
 
-        for(int bucket = 0; bucket < currentLength; bucket++) {
-            if(buckets[bucket] is not null) {
-                /*
-                If we get here, we need to rehash an entry. How do we not duplicate rehashes? A version in the KVP?
-                */
-                for(int entry = 0; entry < buckets[bucket].Length(); entry++) {
-                    
-                }
-            }
-        }
-
-        // At some point I need to do this.
-        buckets = newBuckets;
 
     }
 

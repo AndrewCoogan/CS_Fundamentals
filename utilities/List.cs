@@ -9,6 +9,9 @@ public class List<T>
 {
     // emptyArray will never change, static readonly will make that set.
     private static readonly T[] _emptyList = new T[0];
+    private int _count = 0;
+    private int _capacity = 0;
+    private static int DefaultMultiplier = 16;
 
     // I need to initialize my actual list.
     private T[] _list;
@@ -33,29 +36,42 @@ public class List<T>
     }
     public List(int length) {
         if(length > 0) {
+            _capacity = length;
             _list = new T[length];
         } else if(length == 0) {
+            _capacity = 0;
             _list = _emptyList;
         } else {
             throw new ArgumentOutOfRangeException(nameof(length));
         }
     }
 
+    public int Length() => _count;
+    public int Capacity() => _capacity;
+
     public List(int length, T? defaultValue) {
         List<T> newList = new(length);
         for(int i = 0; i < length; i++) {
             newList[i] = defaultValue; 
         }
+        _capacity = length;
         _list = newList.ToArray();
     }
 
     // This is going to add a singular item to the list.
     public void Add(T item) {        
         /*
-        Using resize as Copy creates a new list and copies it element by element. O(n)
+        Copy creates a new list and copies it element by element. O(n)
         Resize is going to make the list longer.
         "REF" is passing in _list by referene, meaning its changing the array in place.
         */
+
+        _count++;
+        if(_count > _capacity) {
+            
+        } else {
+
+        }
         
         Array.Resize(ref _list, _list.Length + 1);
 
@@ -85,6 +101,7 @@ public class List<T>
     // If its true, we want it in the result, if not, we dont.
     // This is not an inplace operation and returns a new instance of a list.
     private List<T> Filter(Predicate<T> match, bool just_first) {
+        // This is making a new instance of a list, no need to worry about count.
         List<T> outputList = new(); 
         for(int i = 0 ; _list != null && i < _list.Length; i++) {
             // && ensures the LHS is true before doing the RHS
@@ -103,22 +120,20 @@ public class List<T>
 
     public List<T> Filter(Predicate<T> match) => Filter(match, false);
 
-    public int Length() => _list.Length;
-
     public List<T>? Remove(T item, bool inplace = false)  {
         bool retrurnNull = inplace;
         List<T> filteredData = Filter(X => !EqualityComparer<T>.Default.Equals(item, X), false);
-        if(inplace) _list = filteredData.ToArray();
+        if(inplace) {
+            _count = filteredData.Length();
+            _capacity = filteredData.Capacity();
+            _list = filteredData.ToArray();
+        }
         return retrurnNull ? null : filteredData;
-    }
-
-    public T Pop() {
-        
     }
 
     public T[] ToArray() {
         T[] array = new T[Length()];
-        Array.Copy(_list, 0, array, 0, _list.Length);
+        Array.Copy(_list, 0, array, 0, array.Length);
         return array;
     }
 
@@ -138,6 +153,7 @@ public class List<T>
             // I dont see why we cant add a possible null value.
             _list[index] = value;
         } else {
+            // I can figure out if there is a multiple of the minimum denominator
             T[] newList = new T[index + 1];
             Array.Copy(_list, newList, _list.Length);
             if(value != null) { newList[index] = value; }
