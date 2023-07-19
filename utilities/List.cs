@@ -9,9 +9,9 @@ public class List<T>
 {
     // emptyArray will never change, static readonly will make that set.
     private static readonly T[] _emptyList = new T[0];
-    private int _count = 0;
+    private int _length = 0;
     private int _capacity = 0;
-    private static int DefaultMultiplier = 16;
+    private static int DefaultScaler = 16;
 
     // I need to initialize my actual list.
     private T[] _list;
@@ -46,7 +46,7 @@ public class List<T>
         }
     }
 
-    public int Length() => _count;
+    public int Length() => _length;
     public int Capacity() => _capacity;
 
     public List(int length, T? defaultValue) {
@@ -66,14 +66,14 @@ public class List<T>
         "REF" is passing in _list by referene, meaning its changing the array in place.
         */
 
-        _count++;
-        if(_count > _capacity) {
-            
-        } else {
-
+        _length++;
+        if(_length >= _capacity) {
+            // I make the array bigger.
+            Array.Resize(ref _list, _length + DefaultScaler);
+            _capacity += DefaultScaler;
         }
-        
-        Array.Resize(ref _list, _list.Length + 1);
+
+        _list[_length] = item;
 
         /*
         Here's a breakdown of the syntax:
@@ -81,9 +81,8 @@ public class List<T>
             1 represents the offset from the end of the collection. 
                 
             So ^1 returns the last element.
+            _list[^1] = item;
         */
-
-        _list[^1] = item;
     }
 
     public void Resize(int length) {
@@ -124,7 +123,8 @@ public class List<T>
         bool retrurnNull = inplace;
         List<T> filteredData = Filter(X => !EqualityComparer<T>.Default.Equals(item, X), false);
         if(inplace) {
-            _count = filteredData.Length();
+            // It is so awkward to have these exposed.
+            _length = filteredData.Length();
             _capacity = filteredData.Capacity();
             _list = filteredData.ToArray();
         }
@@ -149,16 +149,13 @@ public class List<T>
             throw new ArgumentNullException(nameof(index));
         } else if(index < 0) {
             throw new ArgumentOutOfRangeException(nameof(index));
-        } else if(index < _list.Length) {
-            // I dont see why we cant add a possible null value.
-            _list[index] = value;
+        } else if(index < _capacity) {
+            // Add will now add after this index
+            _length = index + 1;
         } else {
-            // I can figure out if there is a multiple of the minimum denominator
-            T[] newList = new T[index + 1];
-            Array.Copy(_list, newList, _list.Length);
-            if(value != null) { newList[index] = value; }
-            _list = newList;
+            Resize(index);
         }
+        _list[index] = value;
     }
 
     // I can add the NotNull attribute to throw a null exception error if a null is passes.

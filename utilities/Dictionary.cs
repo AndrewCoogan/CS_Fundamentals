@@ -49,21 +49,30 @@ public class Dictionary<TKey, TValue> {
     Readonly means you can change it you cant make a new thing in its place.
     */
     private const int DefaultCapacity = 16;
-    private int Iteration = 1;
-    private readonly List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
 
     public Dictionary() {
 
     }
 
     private void Resize() {
-
-
+        buckets.Resize(buckets.Capacity() + DefaultCapacity);
     }
 
     private int GetBucketIndex(TKey key) => Math.Abs(key!.GetHashCode() % buckets.Length());
 
-    private void AddToDict(KeyValuePair<TKey, TValue> item) {
+    /// <summary>
+    /// 
+    /// This is a method that adds an element to the sub list, a list within a bucket.
+    /// It makes the hash of the key, and gets the bucket location.
+    /// If its empty then we make a new list of kvp's.
+    /// If its a new list, then the loop immediately skips and adds the kvp to the list.
+    /// If the list is populated, we need to overwrite the value.
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    private void AddToDict(KeyValuePair<TKey, TValue> item)
+    {
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(item.Key);
         // TODO: This is where I will need to do resizing.
@@ -84,7 +93,7 @@ public class Dictionary<TKey, TValue> {
             position++;
         }
 
-        if(newValue) current.Add(item);
+        if(newValue) current.Add(item); // I think this works?
     }
 
     public void Add(TKey key, TValue value) => SetAt(key, value);
@@ -141,4 +150,8 @@ public class Dictionary<TKey, TValue> {
     public int CountBuckets() => buckets.Length();
 
     public int GetRawBucket(TKey key) => GetBucketIndex(key);
+}
+
+public class List
+{
 }
