@@ -32,14 +32,14 @@ public class List<T>
     The data types for this one are pretty unfamiliar, so I think I am going to move on for now.
     */
     public List() {
-        _list = _emptyList;
+        _capacity = DefaultScaler;
+        _list = new T[DefaultScaler];    
     }
     public List(int length) {
         if(length > 0) {
             _capacity = length;
             _list = new T[length];
         } else if(length == 0) {
-            _capacity = 0;
             _list = _emptyList;
         } else {
             throw new ArgumentOutOfRangeException(nameof(length));
@@ -66,14 +66,17 @@ public class List<T>
         "REF" is passing in _list by referene, meaning its changing the array in place.
         */
 
-        _length++;
-        if(_length >= _capacity) {
+        //Console.WriteLine("Length: {0}", _length.ToString());
+        //Console.WriteLine("Capacity: {0}", _capacity.ToString());
+
+        if(_length > _capacity) {
             // I make the array bigger.
             Array.Resize(ref _list, _length + DefaultScaler);
             _capacity += DefaultScaler;
         }
 
         _list[_length] = item;
+        _length++;
 
         /*
         Here's a breakdown of the syntax:
@@ -102,7 +105,7 @@ public class List<T>
     private List<T> Filter(Predicate<T> match, bool just_first) {
         // This is making a new instance of a list, no need to worry about count.
         List<T> outputList = new(); 
-        for(int i = 0 ; _list != null && i < _list.Length; i++) {
+        for(int i = 0 ; _list != null && i < _length; i++) {
             // && ensures the LHS is true before doing the RHS
             if(_list[i] != null && match(_list[i])) {
                 outputList.Add(_list[i]);
@@ -150,7 +153,6 @@ public class List<T>
         } else if(index < 0) {
             throw new ArgumentOutOfRangeException(nameof(index));
         } else if(index < _capacity) {
-            // Add will now add after this index
             _length = index + 1;
         } else {
             Resize(index);
@@ -158,8 +160,7 @@ public class List<T>
         _list[index] = value;
     }
 
-    // I can add the NotNull attribute to throw a null exception error if a null is passes.
-    public T? this[[NotNull] int index] {
+    public T? this[int index] {
         get => GetAt(index);
         set => SetAt(index, value!);
     }

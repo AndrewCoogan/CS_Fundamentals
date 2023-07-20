@@ -51,13 +51,9 @@ public class Dictionary<TKey, TValue> {
     private const int DefaultCapacity = 16;
     private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
 
-    public Dictionary() {
+    public Dictionary() { }
 
-    }
-
-    private void Resize() {
-        buckets.Resize(buckets.Capacity() + DefaultCapacity);
-    }
+    private void Resize() => buckets.Resize(buckets.Capacity() + DefaultCapacity);
 
     private int GetBucketIndex(TKey key) => Math.Abs(key!.GetHashCode() % buckets.Length());
 
@@ -93,10 +89,20 @@ public class Dictionary<TKey, TValue> {
             position++;
         }
 
+        // I am attamting to add the element to the end of the bucket in the buckets list.
+        // I think this should add by reference.
         if(newValue) current.Add(item); // I think this works?
     }
 
     public void Add(TKey key, TValue value) => SetAt(key, value);
+
+    public int Count() {
+        int count = 0;
+        for(int i = 0; i < buckets.Capacity(); i++) {
+            count += buckets[i]?.Length() ?? 0;
+        }
+        return count;
+    }
 
     // This is modeling after python's Dict.Get function.
     // It is forgiving and will return a null if key is not present.
@@ -136,15 +142,6 @@ public class Dictionary<TKey, TValue> {
     public TValue? this[TKey index] {
         get => GetAt(index);
         set => SetAt(index, value);
-    }
-
-    public int Count() {
-        int count = 0;
-        for(int i = 0; i < buckets.Length(); i++) {
-            count+= buckets[i]!.Length();
-            //Console.WriteLine("Length of bucket " + i.ToString() + " with length " + buckets[i]!.Length().ToString());
-        }
-        return count;
     }
 
     public int CountBuckets() => buckets.Length();

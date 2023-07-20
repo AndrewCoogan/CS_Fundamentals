@@ -23,15 +23,11 @@ namespace utilities
         [Test]
         public void DictionaryTest()
         {
-            Assert.Multiple(() =>
-            {
-                // Assert.That(myDictStrInt.Count(), Is.EqualTo(3));
-                // This does not always work because its reasonably easy to hit hashing collisions
-                var brown = myDictStrInt["brown"];
-                Assert.That(brown, Is.EqualTo(1));
-                int? jumped = myDictStrInt["jumped"];
-                Assert.That(jumped, Is.EqualTo(default(int)));
-            });
+            Assert.That(myDictStrInt.Count(), Is.EqualTo(3));
+            var brown = myDictStrInt["brown"];
+            Assert.That(brown, Is.EqualTo(1));
+            int? jumped = myDictStrInt["jumped"];
+            Assert.That(jumped, Is.EqualTo(default(int)));
         }
     }
 }
