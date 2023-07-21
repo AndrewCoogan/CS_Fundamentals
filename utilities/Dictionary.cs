@@ -54,16 +54,15 @@ public class Dictionary<TKey, TValue> {
     */
     private const int DefaultCapacity = 16;
     private const double MaxCapacityRatio = 0.75;
-    private List<List<KeyValuePair<TKey, TValue>>> buckets, newBuckets = new(DefaultCapacity);
+    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    private List<List<KeyValuePair<TKey, TValue>>> newBuckets = new(DefaultCapacity);
     private int _count = 0;
-
-    public Dictionary() { }
 
     public int Count() => _count;
 
     private void Resize() {
         // Make a new one longer.
-        var newBuckets = new List<List<KeyValuePair<TKey, TValue>>>(buckets.Capacity() + DefaultCapacity);
+        newBuckets = new List<List<KeyValuePair<TKey, TValue>>>(buckets.Capacity() + DefaultCapacity);
 
         _count = 0;
         for(int i = 0; i < buckets.Capacity(); i++) {
@@ -91,11 +90,11 @@ public class Dictionary<TKey, TValue> {
     /// <param name="item"></param>
     private void AddToDict(KeyValuePair<TKey, TValue> item, bool assignInNewBuckets = false)
     {
-        Console.WriteLine("Adding kvp: {0} - {1}",item.Key.ToString(), item.Value.ToString());
+        // Console.WriteLine("Adding kvp: {0} - {1}", item.Key!.ToString(), item.Value?.ToString());
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(item.Key, assignInNewBuckets ? 0 : newBuckets.Capacity());
         // TODO: This is where I will need to do resizing.
-        bool resize = _count / buckets.Capacity() > MaxCapacityRatio;
+        bool resize = ( _count / buckets.Capacity() ) > MaxCapacityRatio;
         if(resize & !assignInNewBuckets) Resize();
 
         // This can be null, if we have not accessed it yet.
@@ -119,7 +118,7 @@ public class Dictionary<TKey, TValue> {
         // I am attamting to add the element to the end of the bucket in the buckets list.
         // I think this should add by reference.
         if(newValue) {
-            Console.WriteLine("Key: {0}, Value: {1} is being added.", item.Key.ToString(), item.Value.ToString());
+            //Console.WriteLine("Key: {0}, Value: {1} is being added.", item.Key.ToString(), item.Value?.ToString());
             current.Add(item);
             _count++;
         }
@@ -138,7 +137,7 @@ public class Dictionary<TKey, TValue> {
         // This might be null?
         List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
 
-        Console.WriteLine("Kay {0} : Value {1}", key?.ToString() ?? "null", current.ToString());
+        if (current == null) return default;
 
         // Loop through the list. If the list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
@@ -162,9 +161,10 @@ public class Dictionary<TKey, TValue> {
 
     public void Add(TKey key, TValue value) => AddToDict(new KeyValuePair<TKey, TValue>(key, value));
 
-    public TValue? this[TKey index] {
+    public TValue? this[TKey index]
+    {
         get => GetAt(index);
-        set => AddToDict(new KeyValuePair<TKey, TValue>(index, value));
+        set => AddToDict(new KeyValuePair<TKey, TValue>(index, value!));
     }
 
     public int GetRawBucket(TKey key) => GetBucketIndex(key);
