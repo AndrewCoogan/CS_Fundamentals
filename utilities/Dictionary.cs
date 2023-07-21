@@ -1,4 +1,8 @@
+using System.ComponentModel;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.Arm;
+using System.Xml;
 
 namespace utilities;
 
@@ -49,13 +53,31 @@ public class Dictionary<TKey, TValue> {
     Readonly means you can change it you cant make a new thing in its place.
     */
     private const int DefaultCapacity = 16;
-    private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
+    private const double MaxCapacityRatio = 0.75;
+    private List<List<KeyValuePair<TKey, TValue>>> buckets, newBuckets = new(DefaultCapacity);
+    private int _count = 0;
 
     public Dictionary() { }
 
-    private void Resize() => buckets.Resize(buckets.Capacity() + DefaultCapacity);
+    public int Count() => _count;
 
-    private int GetBucketIndex(TKey key) => Math.Abs(key!.GetHashCode() % buckets.Length());
+    private void Resize() {
+        // Make a new one longer.
+        var newBuckets = new List<List<KeyValuePair<TKey, TValue>>>(buckets.Capacity() + DefaultCapacity);
+
+        _count = 0;
+        for(int i = 0; i < buckets.Capacity(); i++) {
+            for(int j = 0; j < (buckets[i]?.Length() ?? 0); j++) {
+                AddToDict(buckets[i]![j]!, true);
+            }
+        }
+        buckets = newBuckets;
+    }
+
+    private int GetBucketIndex(TKey key, int capacity = 0) {
+        if(capacity == 0) capacity = buckets.Capacity();
+        return Math.Abs(key!.GetHashCode() % capacity);
+    }
 
     /// <summary>
     /// 
@@ -67,20 +89,25 @@ public class Dictionary<TKey, TValue> {
     /// 
     /// </summary>
     /// <param name="item"></param>
-    private void AddToDict(KeyValuePair<TKey, TValue> item)
+    private void AddToDict(KeyValuePair<TKey, TValue> item, bool assignInNewBuckets = false)
     {
+        Console.WriteLine("Adding kvp: {0} - {1}",item.Key.ToString(), item.Value.ToString());
         // Find out what bucket has the key, if it exists.
-        int bucketIndex = GetBucketIndex(item.Key);
+        int bucketIndex = GetBucketIndex(item.Key, assignInNewBuckets ? 0 : newBuckets.Capacity());
         // TODO: This is where I will need to do resizing.
+        bool resize = _count / buckets.Capacity() > MaxCapacityRatio;
+        if(resize & !assignInNewBuckets) Resize();
 
         // This can be null, if we have not accessed it yet.
-        List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex] ?? new List<KeyValuePair<TKey, TValue>>();
+        List<KeyValuePair<TKey, TValue>> current = assignInNewBuckets ?
+            newBuckets[bucketIndex] ?? new List<KeyValuePair<TKey, TValue>>() : 
+            buckets[bucketIndex] ?? new List<KeyValuePair<TKey, TValue>>();
+
         bool newValue = true;
         int position = 0;
 
         // Here we are in the sub list, ideally of length 1.
         while (position < current.Length() & newValue) {
-            //Console.WriteLine(position.ToString() + " " + current.Length().ToString());
             // The key already exists. Set it to the new value.
             if(EqualityComparer<TKey>.Default.Equals(current[position]!.Key, item.Key)) {
                 current[position]!.Value = item.Value;
@@ -91,17 +118,14 @@ public class Dictionary<TKey, TValue> {
 
         // I am attamting to add the element to the end of the bucket in the buckets list.
         // I think this should add by reference.
-        if(newValue) current.Add(item); // I think this works?
-    }
-
-    public void Add(TKey key, TValue value) => SetAt(key, value);
-
-    public int Count() {
-        int count = 0;
-        for(int i = 0; i < buckets.Capacity(); i++) {
-            count += buckets[i]?.Length() ?? 0;
+        if(newValue) {
+            Console.WriteLine("Key: {0}, Value: {1} is being added.", item.Key.ToString(), item.Value.ToString());
+            current.Add(item);
+            _count++;
         }
-        return count;
+
+        List<List<KeyValuePair<TKey, TValue>>> targetBuckets = assignInNewBuckets ? newBuckets : buckets;
+        targetBuckets[bucketIndex] = current;
     }
 
     // This is modeling after python's Dict.Get function.
@@ -113,6 +137,8 @@ public class Dictionary<TKey, TValue> {
         // This will return the List for us to see if the specific key exits.
         // This might be null?
         List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
+
+        Console.WriteLine("Kay {0} : Value {1}", key?.ToString() ?? "null", current.ToString());
 
         // Loop through the list. If the list is empty, the length will be 0.
         for(int i = 0; i < current.Length(); i++){
@@ -134,21 +160,12 @@ public class Dictionary<TKey, TValue> {
         return Get(key);
     }
 
-    private void SetAt(TKey key, TValue? value) {
-        KeyValuePair<TKey, TValue> kvp = new(key, value);
-        AddToDict(kvp);
-    }
+    public void Add(TKey key, TValue value) => AddToDict(new KeyValuePair<TKey, TValue>(key, value));
 
     public TValue? this[TKey index] {
         get => GetAt(index);
-        set => SetAt(index, value);
+        set => AddToDict(new KeyValuePair<TKey, TValue>(index, value));
     }
 
-    public int CountBuckets() => buckets.Length();
-
     public int GetRawBucket(TKey key) => GetBucketIndex(key);
-}
-
-public class List
-{
 }

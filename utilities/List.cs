@@ -11,7 +11,7 @@ public class List<T>
     private static readonly T[] _emptyList = new T[0];
     private int _length = 0;
     private int _capacity = 0;
-    private static int DefaultScaler = 16;
+    private const int DefaultScaler = 16;
 
     // I need to initialize my actual list.
     private T[] _list;

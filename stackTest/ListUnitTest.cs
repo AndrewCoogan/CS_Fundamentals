@@ -9,8 +9,7 @@ namespace utilities
 
 
         [SetUp]
-        public void Setup()
-        {   
+        public void Setup() {   
 
         }
 
@@ -34,19 +33,17 @@ namespace utilities
 
         [Test]
         public void CanTellLength() {
-            Assert.Multiple(() => 
-            {
-                Assert.That(ListInt.Length(), Is.EqualTo(3));
-                // We initialize it to be 5 long, but its empty, so nothing should be returned.
-                // If we want to change this behavior, its a small tweak.
-                Assert.That(ListIntLengthFive.Length(), Is.EqualTo(0));
-            });
+            Assert.That(ListInt.Length(), Is.EqualTo(3));
+        }
+
+        [Test]
+        public void CanTellLenthOfEmptyList() {
+            Assert.That(ListIntLengthFive.Length(), Is.EqualTo(0));
         }
 
         [Test]
         public void CanFlagContainers() {
-            Assert.Multiple(() =>
-            {
+            Assert.Multiple(() => {
                 Assert.That(ListInt.Contains(1), Is.True);
                 Assert.That(ListInt.Contains(-1), Is.False);
                 Assert.That(ListString.Contains("Quick"), Is.True);
@@ -56,8 +53,7 @@ namespace utilities
 
         [Test]
         public void CanFilter() {
-            Assert.Multiple(() =>
-            {
+            Assert.Multiple(() => {
                 Assert.That(ListInt.Filter(x => x % 2 == 0).Length(), Is.EqualTo(1));
                 Assert.That(ListInt.Filter(x => x % 1 == 0).Length(), Is.EqualTo(3));
                 Assert.That(ListInt.Filter(x => x % 10 == 0).Length(), Is.EqualTo(0));
@@ -66,10 +62,8 @@ namespace utilities
         }
 
         [Test]
-        public void CanRemove()
-        {
-            Assert.Multiple(() =>
-            {
+        public void CanRemove() {
+            Assert.Multiple(() => {
 
                 var newListInt = ListInt.Remove(1);
                 Assert.That(newListInt!.Length(), Is.EqualTo(2));
