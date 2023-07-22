@@ -140,6 +140,15 @@ public class List<T>
         return array;
     }
 
+    // This is kinda copied from the source, it would just make some of what comes later a little easier.
+    public void ForEach(Action<T> action) {
+        if (action is null) throw new ArgumentNullException(nameof(action));
+
+        for (int i = 0; i < _length; i++) {
+            action(_list[i]);
+        }
+    }
+
     private T? GetAt(int index) {
         if(index < 0 || index >= _list.Length) {
             throw new ArgumentOutOfRangeException(nameof(index));

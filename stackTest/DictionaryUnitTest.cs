@@ -12,7 +12,7 @@ namespace utilities
 
         }
         
-        [Test]
+        [Test, Order(1)]
         public void CanAddLotsOfValues() {
             for(int i = 0; i < bigDictMeasurement; i++) {
                 myDictStrIntBig.Add(i.ToString(), i);
@@ -21,13 +21,27 @@ namespace utilities
 
         [Test]
         public void CanBigDictsHaveGoodStats() {
-            Assert.Multiple(() => {
-                Assert.That(myDictStrIntBig.Count, Is.EqualTo(bigDictMeasurement));
-            });
+            Assert.That(myDictStrIntBig.Count, Is.EqualTo(bigDictMeasurement));
+        }
+
+        [Test, Order(2)]
+        public void CanStoreCorrectValues() {
+            Assert.That(myDictStrIntBig["63"], Is.EqualTo(63));
+        }
+
+        [Test, Order(3)]
+        public void CanGetCorrectValuesViaGet() {
+            Assert.That(myDictStrIntBig.Get("63"), Is.EqualTo(63));
         }
 
         [Test]
-        public void CanAddValues() {
+        public void CanReplaceValuesAccurately() {
+            myDictStrIntBig["13"] = 26;
+            Assert.That(myDictStrIntBig["13"], Is.EqualTo(26));
+        }
+
+        [Test]
+        public void CanAddValuesViaBrackets() {
             myDictStrInt["quick"] = 1;
             myDictStrInt["brown"] = 2;
             myDictStrInt["fox"] = 3;

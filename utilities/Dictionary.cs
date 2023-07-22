@@ -60,6 +60,16 @@ public class Dictionary<TKey, TValue> {
 
     public int Count() => _count;
 
+    public void Print() {
+        for(int i = 0; i < Math.Ceiling((double)_count / DefaultCapacity) * DefaultCapacity; i++) {
+            if(buckets[i] is not null) {
+                for(int j = 0; j < buckets[i]!.Length(); j++) {
+                    Console.WriteLine("{0} : {1}", buckets![i]![j]?.Key?.ToString(), buckets![i]![j]?.Value?.ToString());
+                }
+            }
+        }
+    }
+
     private void Resize() {
         // Make a new one longer.
         newBuckets = new List<List<KeyValuePair<TKey, TValue>>>(buckets.Capacity() + DefaultCapacity);
@@ -127,42 +137,38 @@ public class Dictionary<TKey, TValue> {
         targetBuckets[bucketIndex] = current;
     }
 
-    // This is modeling after python's Dict.Get function.
     // It is forgiving and will return a null if key is not present.
-    public TValue? Get(TKey key) {
+    public TValue? Get(TKey key)
+    {
         // Find out what bucket has the key, if it exists.
         int bucketIndex = GetBucketIndex(key);
 
-        // This will return the List for us to see if the specific key exits.
-        // This might be null?
         List<KeyValuePair<TKey, TValue>> current = buckets[bucketIndex]!;
 
-        if (current == null) return default;
+        if (current is not null) {
+            // Loop through the list. If the list is empty, the length will be 0.
+            for (int i = 0; i < current.Length(); i++) {
+                // This will return the value of the node.
+                KeyValuePair<TKey, TValue> kvp = current[i]!;
 
-        // Loop through the list. If the list is empty, the length will be 0.
-        for(int i = 0; i < current.Length(); i++){
-            // This will return the value of the node.
-            KeyValuePair<TKey, TValue>? keyValuePair = current[i];
-
-            if(EqualityComparer<TKey>.Default.Equals(key, keyValuePair!.Key)) {
-                // If the key is present, return the key.
-                return keyValuePair.Value;
+                if (EqualityComparer<TKey>.Default.Equals(key, kvp.Key)) {
+                    // If the key is present, return the value.
+                    return kvp.Value;
+                }
             }
         }
+
         return default;
     }
 
     // Took the lead from my List code on this one.
     // Will allow for DrewDict[obj] = obj2
     // or xxx = DrewDict[obj]
-    private TValue? GetAt(TKey key) {
-        return Get(key);
-    }
+    private TValue? GetAt(TKey key) => Get(key);
 
     public void Add(TKey key, TValue value) => AddToDict(new KeyValuePair<TKey, TValue>(key, value));
 
-    public TValue? this[TKey index]
-    {
+    public TValue? this[TKey index] {
         get => GetAt(index);
         set => AddToDict(new KeyValuePair<TKey, TValue>(index, value!));
     }
