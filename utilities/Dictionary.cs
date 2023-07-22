@@ -52,7 +52,7 @@ public class Dictionary<TKey, TValue> {
 
     Readonly means you can change it you cant make a new thing in its place.
     */
-    private const int DefaultCapacity = 16;
+    protected const int DefaultCapacity = 16;
     private const double MaxCapacityRatio = 0.75;
     private List<List<KeyValuePair<TKey, TValue>>> buckets = new(DefaultCapacity);
     private List<List<KeyValuePair<TKey, TValue>>> newBuckets = new(DefaultCapacity);
