@@ -76,7 +76,7 @@ public class Dictionary<TKey, TValue> {
 
         _count = 0;
         for(int i = 0; i < buckets.Capacity(); i++) {
-            for(int j = 0; j < (buckets[i]?.Length() ?? 0); j++) {
+            for(int j = 0; j < buckets[i]?.Length(); j++) {
                 AddToDict(buckets[i]![j]!, true);
             }
         }
@@ -102,9 +102,8 @@ public class Dictionary<TKey, TValue> {
     {
         // Console.WriteLine("Adding kvp: {0} - {1}", item.Key!.ToString(), item.Value?.ToString());
         // Find out what bucket has the key, if it exists.
-        int bucketIndex = GetBucketIndex(item.Key, assignInNewBuckets ? 0 : newBuckets.Capacity());
-        // TODO: This is where I will need to do resizing.
-        bool resize = ( _count / buckets.Capacity() ) > MaxCapacityRatio;
+        int bucketIndex = GetBucketIndex(item.Key, assignInNewBuckets ? newBuckets.Capacity() : 0);
+        bool resize = ((double)_count / buckets.Capacity() ) > MaxCapacityRatio;
         if(resize & !assignInNewBuckets) Resize();
 
         // This can be null, if we have not accessed it yet.
@@ -166,7 +165,8 @@ public class Dictionary<TKey, TValue> {
     // or xxx = DrewDict[obj]
     private TValue? GetAt(TKey key) => Get(key);
 
-    public void Add(TKey key, TValue value) => AddToDict(new KeyValuePair<TKey, TValue>(key, value));
+    public void Add(TKey key, TValue value) => 
+        AddToDict(new KeyValuePair<TKey, TValue>(key, value));
 
     public TValue? this[TKey index] {
         get => GetAt(index);

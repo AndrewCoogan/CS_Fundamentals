@@ -1,12 +1,19 @@
+using System.Numerics;
+using System.Reflection.Metadata;
+
 namespace utilities
 {
     public class LinkedUnitTest
     {
+        private const int SMALL = 16; // This should be DefaultScaler in the list.
+        private const int LARGE = 1000;
+
         private readonly List<int> ListInt = new();
         private readonly List<string> ListString = new();
         private readonly List<int> ListIntLengthFive = new(5);
         private readonly List<string> AnotherList = new();
-
+        private readonly List<string> AShortList = new(SMALL);
+        private readonly List<int> ALongList = new();
 
         [SetUp]
         public void Setup() {   
@@ -25,6 +32,10 @@ namespace utilities
                 AnotherList.Add("One sentence.");
                 AnotherList.Add("Another sentence.");
                 AnotherList.Add("Wow, now youre getting greedy with sentences.");
+
+                for(int i = 0; i < 1000; i++) {
+                    ALongList.Add(i);
+                }
             }
             catch(Exception ex) {
                 Assert.Fail(ex.Message);
@@ -76,6 +87,17 @@ namespace utilities
         [Test]
         public void CanUseBracketsForAssignment() {
             Assert.That(AnotherList[0], Is.EqualTo("One sentence."));
+        }
+
+        [Test]
+        public void CanCalculateCapacityCorrectly()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(AShortList.Capacity(), Is.EqualTo(16));
+                Assert.That(ALongList.Capacity(), Is.EqualTo(SMALL * ((LARGE / SMALL) + 1)));
+                // This looks weird, but / of two ints rounds down, so cant simplify easily.
+            });
         }
     }
 }

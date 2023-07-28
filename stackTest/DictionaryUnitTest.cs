@@ -11,6 +11,16 @@ namespace utilities
         public void Setup() {
 
         }
+
+        [Test, Order(1)]
+        public void CanAddValuesAsExpected() {
+            myDictStrInt["quick"] = 1;
+            myDictStrInt["brown"] = 2;
+            myDictStrInt["fox"] = 3;
+            myDictStrIntAdd.Add("quick", 1);
+            myDictStrIntAdd.Add("brown", 2);
+            myDictStrIntAdd.Add("fox", 3);
+        }
         
         [Test, Order(1)]
         public void CanAddLotsOfValues() {
@@ -25,11 +35,11 @@ namespace utilities
         }
 
         [Test, Order(2)]
-        public void CanStoreCorrectValues() {
+        public void CanGetCorrectValues() {
             Assert.That(myDictStrIntBig["63"], Is.EqualTo(63));
         }
 
-        [Test, Order(3)]
+        [Test, Order(2)]
         public void CanGetCorrectValuesViaGet() {
             Assert.That(myDictStrIntBig.Get("63"), Is.EqualTo(63));
         }
@@ -41,53 +51,53 @@ namespace utilities
         }
 
         [Test]
-        public void CanAddValuesViaBrackets() {
-            myDictStrInt["quick"] = 1;
-            myDictStrInt["brown"] = 2;
-            myDictStrInt["fox"] = 3;
-        }
-
-        [Test]
-        public void CanAddValuesViaAddMethod() {
-            myDictStrIntAdd.Add("quick", 1);
-            myDictStrIntAdd.Add("brown", 2);
-            myDictStrIntAdd.Add("fox", 3);
-        }
-
-        [Test]
         public void CanCount()
         {
-            Assert.That(myDictStrInt.Count(), Is.EqualTo(3));
+            Assert.Multiple(() =>
+            {
+                Assert.That(myDictStrInt.Count(), Is.EqualTo(3));
+                Assert.That(myDictStrIntAdd.Count(), Is.EqualTo(3));
+            });
         }
 
         [Test]
-        public void CanCountAfterAdd()
+        public void CanRetrieveValues()
         {
-            Assert.That(myDictStrIntAdd.Count(), Is.EqualTo(3));
-        }
-        
-        [Test]
-        public void CanRetrieveValues() {
-            int brown = myDictStrInt["brown"];
-            Assert.That(brown, Is.EqualTo(2));
+            Assert.Multiple(() =>
+            {
+                Assert.That(myDictStrInt["brown"], Is.EqualTo(2));
+                Assert.That(myDictStrInt.Get("brown"), Is.EqualTo(2));
+            });
         }
 
         [Test]
-        public void CanRetrieveValuesAfterAdd() {
-            int brown = myDictStrIntAdd["brown"];
-            Assert.That(brown, Is.EqualTo(2));
+        public void CanRetrieveValuesAfterAdd()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(myDictStrIntAdd["brown"], Is.EqualTo(2));
+                Assert.That(myDictStrIntAdd.Get("brown"), Is.EqualTo(2));
+            });
         }
 
         [Test]
-        public void CanNotFailWhenKeyNotFound() {
-            int? jumped = myDictStrInt["jumped"];
-            Assert.That(jumped, Is.EqualTo(default(int)));
+        public void CanNotFailWhenKeyNotFound()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(myDictStrInt["jumped"], Is.EqualTo(default(int)));
+                Assert.That(myDictStrInt.Get("jumped"), Is.EqualTo(default(int)));
+            });
         }
 
         [Test]
-        public void CanNotFailWhenKeyNotFoundAfterAdd() {
-            int? jumped = myDictStrIntAdd["jumped"];
-            Assert.That(jumped, Is.EqualTo(default(int)));
+        public void CanNotFailWhenKeyNotFoundAfterAdd()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(myDictStrIntAdd["jumped"], Is.EqualTo(default(int)));
+                Assert.That(myDictStrIntAdd.Get("jumped"), Is.EqualTo(default(int)));
+            });
         }
     }
 }

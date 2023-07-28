@@ -10,7 +10,6 @@ public class List<T>
     // emptyArray will never change, static readonly will make that set.
     private static readonly T[] _emptyList = new T[0];
     private int _length = 0;
-    private int _capacity = 0;
     private const int DefaultScaler = 16;
 
     // I need to initialize my actual list.
@@ -32,12 +31,10 @@ public class List<T>
     The data types for this one are pretty unfamiliar, so I think I am going to move on for now.
     */
     public List() {
-        _capacity = DefaultScaler;
         _list = new T[DefaultScaler];    
     }
     public List(int length) {
         if(length > 0) {
-            _capacity = length;
             _list = new T[length];
         } else if(length == 0) {
             _list = _emptyList;
@@ -47,14 +44,13 @@ public class List<T>
     }
 
     public int Length() => _length;
-    public int Capacity() => _capacity;
+    public int Capacity() => _list.Length;
 
     public List(int length, T? defaultValue) {
         List<T> newList = new(length);
         for(int i = 0; i < length; i++) {
             newList[i] = defaultValue; 
         }
-        _capacity = length;
         _list = newList.ToArray();
     }
 
@@ -67,13 +63,8 @@ public class List<T>
         */
 
         //Console.WriteLine("Length: {0}", _length.ToString());
-        //Console.WriteLine("Capacity: {0}", _capacity.ToString());
 
-        if(_length > _capacity) {
-            // I make the array bigger.
-            Array.Resize(ref _list, _length + DefaultScaler);
-            _capacity += DefaultScaler;
-        }
+        if(_length >= _list.Length) Resize(_list.Length + DefaultScaler);
 
         _list[_length] = item;
         _length++;
@@ -128,7 +119,6 @@ public class List<T>
         if(inplace) {
             // It is so awkward to have these exposed.
             _length = filteredData.Length();
-            _capacity = filteredData.Capacity();
             _list = filteredData.ToArray();
         }
         return retrurnNull ? null : filteredData;
@@ -161,7 +151,7 @@ public class List<T>
             throw new ArgumentNullException(nameof(index));
         } else if(index < 0) {
             throw new ArgumentOutOfRangeException(nameof(index));
-        } else if(index < _capacity) {
+        } else if(index < _list.Length) {
             _length = index + 1;
         } else {
             Resize(index);
